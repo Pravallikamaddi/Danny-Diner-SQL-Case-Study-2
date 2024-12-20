@@ -125,6 +125,7 @@ Each of the following case study questions can be answered using a single SQL st
 Again, there are many questions in this case study - Feel free to pick and choose which ones you'd like to try!
 
 **Before you start writing your SQL queries however - you might want to investigate the data, you may want to do something with some of those null values and data types in the customer_orders and runner_orders tables!**
+
 Here i drop the solution for that,first you have to create that tables and then **start solving the below Queries.**
 
 [Click Here For Cleaned_data Queries](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/cleaned_data.html)
