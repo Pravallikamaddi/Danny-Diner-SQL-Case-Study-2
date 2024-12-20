@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleaned Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-width: 100%;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid #ddd;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .sql-query {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <h2>Cleaned Data</h2>
+    <h3>Clean Customer Orders</h3>
+    <div class="sql-query">
+        <pre>
+DROP TABLE IF EXISTS clean_customer_orders;
+CREATE  TABLE clean_customer_orders AS (
+    SELECT
+        order_id,
+        customer_id,
+        pizza_id,
+        CASE
+            -- Check if exclusions is either empty or has the string value 'null'
+            WHEN exclusions = '' OR exclusions = 'null' OR exclusions = 'NaN' THEN NULL
+            ELSE exclusions
+        END AS exclusions,
+        CASE
+            -- Check if extras is either empty or has the string value 'null'
+            WHEN extras = '' OR extras LIKE 'null' OR extras = 'NaN' THEN NULL
+            ELSE extras
+        END AS extras,
+        order_time
+    FROM
+        pizza_runner.customer_orders
+);
+
+SELECT * 
+FROM clean_customer_orders;
+        </pre>
+    </div>
+
+    <h3>Clean Runner Orders</h3>
+    <div class="sql-query">
+        <pre>
+DROP TABLE IF EXISTS clean_runner_orders;
+CREATE TABLE clean_runner_orders AS (
+    SELECT
+        order_id,
+        runner_id,
+        CASE
+            WHEN pickup_time LIKE 'null' THEN NULL
+            ELSE pickup_time
+        -- Cast results to timestamp
+        END::TIMESTAMP AS pickup_time,
+        -- Return null value if both arguments are equal
+        -- Use regex to match only numeric values and decimal point.
+        -- Cast to numeric datatype
+        NULLIF(REGEXP_REPLACE(distance, '[^0-9.]', '', 'g'), '')::NUMERIC AS distance,
+        NULLIF(REGEXP_REPLACE(duration, '[^0-9.]', '', 'g'), '')::NUMERIC AS duration,
+        -- Cast to NULL datatype if string equals empty, null or Nan.
+        CASE
+            WHEN cancellation LIKE 'null'
+                OR cancellation LIKE 'NaN' 
+                OR cancellation LIKE '' THEN NULL
+        ELSE cancellation
+    END AS cancellation
+    FROM
+        pizza_runner.runner_orders
+);
+
+SELECT * 
+FROM clean_runner_orders;
+        </pre>
+    </div>
+</div>
+
+</body>
+</html>
