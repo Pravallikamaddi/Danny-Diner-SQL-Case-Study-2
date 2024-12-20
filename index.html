@@ -34,23 +34,55 @@
             font-family: Consolas, monospace;
             font-size: 1.2em;
         }
-        .one{
-           text-align:left;
-        }
-        .two{
-            text-align:right;
-        }
     </style>
 </head>
 <body>
 
     <h1>SQL Queries for Pizza Runner Case Study - Part A</h1>
-   <div class="one"> 
-  <a href="cleaned_data.html">Visit for Cleaned Data</a>. Before starting to solve the Queries, first clean the data.<br>
-       </div>
-<div class="two">
-  <a href="CS2-B.html">Go to Second Page for Pizza Runner Case Study - Part B.</a>
+  div {background-color: green;}
+div a {
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+  padding: 15px;
+  display:inline-block;
+}
+ul {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+ul li {display: inline-block;}
+ul li:hover {background: #555;}
+ul li:hover ul {display: block;}
+ul li ul {
+  position: absolute;
+  width: 200px;
+  display: none;
+}
+ul li ul li { 
+  background: #555; 
+  display: block; 
+}
+ul li ul li a {display:block !important;} 
+ul li ul li:hover {background: #666;}
+</style>
+</head>
+<body>
+
+<div>
+  <a href="#">Useless Link</a>
+  <ul>
+    <li>
+      <a href="#">CLICK HERE</a>
+      <ul>
+        <li><a href="cleaned_data.html">first</a></li>
+        <li><a href="CS2-B.html">second</a></li>
+      </ul>
+    </li>
+  </ul>
 </div>
+
     
     
 
