@@ -143,7 +143,9 @@ Here i drop the solution for that,first you have to create that tables and then 
 8. How many pizzas were delivered that had both exclusions and extras?
 9. What was the total volume of pizzas ordered for each hour of the day?
 10. What was the volume of orders for each day of the week?
-    [Part - A Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/#)
+
+[Part - A Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/#)
+
 ---
 
 
@@ -156,7 +158,9 @@ Here i drop the solution for that,first you have to create that tables and then 
 5. What was the difference between the longest and shortest delivery times for all orders?
 6. What was the average speed for each runner for each delivery, and do you notice any trend for these values?
 7. What is the successful delivery percentage for each runner?
-    [Part - B Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/CS2-B.html)
+
+[Part - B Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/CS2-B.html)
+
 ---
 
 
