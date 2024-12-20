@@ -127,6 +127,7 @@ Again, there are many questions in this case study - Feel free to pick and choos
 **Before you start writing your SQL queries however - you might want to investigate the data, you may want to do something with some of those null values and data types in the customer_orders and runner_orders tables!**
 Here i drop the solution for that,first you have to create that tables and then **start solving the below Queries.**
 
+[Click Here For Cleaned_data Queries](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/cleaned_data.html)
 
 ---
 
@@ -144,6 +145,7 @@ Here i drop the solution for that,first you have to create that tables and then 
 10. What was the volume of orders for each day of the week?
 
 ---
+[Part - A Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/#)
 
 ### B. Runner and Customer Experience
 
@@ -156,6 +158,7 @@ Here i drop the solution for that,first you have to create that tables and then 
 7. What is the successful delivery percentage for each runner?
 
 ---
+[Part - B Query Solutions](https://pravallikamaddi.github.io/Danny-Diner-SQL-Case-Study-2/CS2-B.html)
 
 ### C. Ingredient Optimisation
 
