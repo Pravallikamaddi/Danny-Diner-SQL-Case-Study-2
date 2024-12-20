@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Runner SQL Queries - Part A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .query-section {
+            margin-bottom: 40px;
+        }
+        .query-section h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        code {
+            font-family: Consolas, monospace;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SQL Queries for Pizza Runner Case Study - Part A</h1>
+
+    <div class="query-section">
+        <h2>A1.How many pizzas were ordered?</h2>
+        <pre><code>
+select count(order_id) as No_Of_Orders from pizza_runner.customer_orders;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A2.How many unique customer orders were made?</h2>
+        <pre><code>
+SELECT count(DISTINCT order_id) as Unique_Orders FROM pizza_runner.customer_orders;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A3.How many successful orders were delivered by each runner?</h2>
+        <pre><code>
+select runner_id,COUNT(order_id) from clean_runner_orders WHERE cancellation is NULL GROUP BY runner_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A4. How many of each type of pizza was delivered?</h2>
+        <pre><code>
+select p.pizza_name,count(c.order_id) from pizza_runner.pizza_names p JOIN clean_customer_orders c on p.pizza_id=c.pizza_id join clean_runner_orders o on c.order_id = o.order_id where o.cancellation is NULL GROUP BY p.pizza_name order by count desc;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A5.How many Vegetarian and Meatlovers were ordered by each customer?</h2>
+        <pre><code>
+SELECT customer_id,sum(case when pizza_id=1 then 1 else 0 end )as Meatlovers,sum(CASE WHEN pizza_id =2 then 1 ELSE 0 END )AS Vegetarian from clean_customer_orders GROUP by customer_id order by customer_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A6.What was the maximum number of pizzas delivered in a single order?</h2>
+        <pre><code>
+WITH order_count AS (
+  SELECT	
+  	t1.order_id,
+  	COUNT(t1.pizza_id) AS orders
+  FROM 
+  	clean_customer_orders AS t1
+  JOIN 
+  	clean_runner_orders AS t2
+  ON 
+  	t1.order_id = t2.order_id
+  WHERE
+  	t2.cancellation IS NULL
+  GROUP BY 
+  	t1.order_id
+)
+SELECT
+  MAX(orders)
+FROM order_count;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A7.For each customer, how many delivered pizzas had at least 1 change and how many had no changes?</h2>
+        <pre><code>
+select t1.customer_id,sum(case when t1.exclusions is not null or t1.extras is not null then 1 else 0 end)as withchanges,sum(case when t1.exclusions is null and t1.extras is null then 1 else 0 end)as nochange from clean_customer_orders t1 JOIN clean_runner_orders t2 on t1.order_id=t2.order_id where t2.cancellation is NULL GROUP by t1.customer_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A8.How many pizzas were delivered that had both exclusions and extras?</h2>
+        <pre><code>
+select count(t1.pizza_id) from clean_customer_orders t1 join clean_runner_orders t2 on t1.order_id=t2.order_id where t1.exclusions is NOT NULL and t1.extras is NOT NULL and t2.cancellation ISNULL;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A9.What was the total volume of pizzas ordered for each hour of the day?</h2>
+        <pre><code>
+SELECT EXTRACT(HOUR FROM order_time) AS order_hour, COUNT(order_id) AS order_count
+FROM clean_customer_orders
+GROUP BY EXTRACT(HOUR FROM order_time)
+ORDER BY order_hour;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>A10. What was the volume of orders for each day of the week?</h2>
+        <pre><code>
+SELECT
+  TO_CHAR(order_time, 'Day') AS day_of_week,
+  COUNT(*) AS number_of_pizzas
+FROM 
+  clean_customer_orders
+GROUP BY 
+  day_of_week,
+  EXTRACT('dow' FROM order_time)
+ORDER BY 
+  EXTRACT('dow' FROM order_time);
+</code></pre>
+    </div>
+
+</body>
+</html>

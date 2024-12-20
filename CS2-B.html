@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Runner SQL Queries - Part B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .query-section {
+            margin-bottom: 40px;
+        }
+        .query-section h2 {
+            color: #333;
+        }
+        pre {
+            background-color: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        code {
+            font-family: Consolas, monospace;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SQL Queries for Pizza Runner Case Study - Part B</h1>
+
+    <div class="query-section">
+        <h2>B1.How many runners signed up for each 1 week period? (i.e. week starts 2021-01-01)</h2>
+        <pre><code>
+WITH runner_signups AS (
+  SELECT
+  	runner_id,
+  	registration_date,
+  	registration_date - ((registration_date - '2021-01-01') % 7) AS starting_week
+  FROM pizza_runner.runners
+)
+SELECT
+  starting_week,
+  COUNT(runner_id) AS number_of_runners
+FROM
+  runner_signups
+GROUP BY 
+  starting_week
+ORDER BY 
+  starting_week;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B2.What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?</h2>
+        <pre><code>
+with timediff as(
+select  distinct t1.order_id,t1.order_time-t2.pickup_time as c_time,t2.runner_id 
+from clean_customer_orders t1 
+join clean_runner_orders t2 on t1.order_id=t2.order_id 
+where t2.pickup_time is not NULL)
+select runner_id,abs(extract('minutes' from avg(c_time))) as avg_pickup_time 
+from timediff 
+group by runner_id 
+order by runner_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B3.Is there any relationship between the number of pizzas and how long the order takes to prepare?</h2>
+        <pre><code>
+select t1.order_id,count(t1.pizza_id),t2.pickup_time-t1.order_time as prep_time 
+from clean_customer_orders t1 
+join clean_runner_orders t2 on t1.order_id=t2.order_id 
+where t2.cancellation is NULL 
+group by t1.order_id,prep_time 
+order by count;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B4.What was the average distance travelled for each customer?</h2>
+        <pre><code>
+WITH get_distances AS (
+  SELECT
+  	t2.customer_id,
+  	t2.order_id,
+  	t1.distance
+  FROM 
+  	clean_runner_orders AS t1
+  JOIN
+  	clean_customer_orders AS t2
+  ON 
+  	t2.order_id = t1.order_id
+  WHERE
+  	t1.distance IS NOT NULL
+  GROUP BY 
+  	t2.customer_id,
+  	t1.distance,
+  	t2.order_id
+  ORDER BY 
+  	t2.customer_id
+)
+SELECT
+  customer_id,
+  ROUND(AVG(distance), 2) AS avg_distance
+FROM
+  get_distances
+GROUP BY
+  customer_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B5.What was the difference between the longest and shortest delivery times for all orders?</h2>
+        <pre><code>
+SELECT
+  MAX(duration) - MIN(duration) AS time_difference
+FROM 
+  clean_runner_orders;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B6.What was the average speed for each runner for each delivery and do you notice any trend for these values?</h2>
+        <pre><code> 
+select t1.customer_id,t1.order_id,count(t1.pizza_id),t2.distance,t2.duration,
+round((60*t2.distance/t2.duration),2) as Speed 
+from clean_customer_orders t1 
+join clean_runner_orders t2 on t1.order_id=t2.order_id 
+where t2.cancellation is NULL 
+group by t1.customer_id,t1.order_id,t2.distance,t2.duration,round((t2.distance/t2.duration),2) 
+ORDER by t1.order_id;</code></pre>
+    </div>
+
+    <div class="query-section">
+        <h2>B7.What is the successful delivery percentage for each runner?</h2>
+        <pre><code>
+SELECT runner_id,
+       COUNT(pickup_time) AS delivered_orders,
+       COUNT(*) AS total_orders,
+       ROUND(100 * COUNT(pickup_time) / COUNT(*)) AS delivery_success_percentage
+FROM clean_runner_orders
+GROUP BY runner_id
+ORDER BY runner_id;</code></pre>
+    </div>
+
+</body>
+</html>
